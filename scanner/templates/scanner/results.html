@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fruit Scanner Results</title>
+</head>
+<body>
+    <h1>Fruit Details</h1>
+    {% if result %}
+        <p><strong>Name:</strong> {{ result.name }}</p>
+        <p><strong>Health Benefits:</strong> {{ result.health_benefits }}</p>
+        <p><strong>Common Location:</strong> {{ result.common_location }}</p>
+    {% else %}
+        <p>Could not identify the fruit.</p>
+    {% endif %}
+    <a href="/camera-scan/">Scan Again</a>
+</body>
+</html>

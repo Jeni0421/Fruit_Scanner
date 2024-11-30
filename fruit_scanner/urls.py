@@ -23,4 +23,3 @@ urlpatterns = [
     path('', views.index, name='index'),  # This will route the root path to the 'index' view
     path('camera-scan/', views.camera_scan, name='camera_scan'),
 ]
-

@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fruit Scanner</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f0f0f0; /* Light grey background */
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+        }
+
+        h1 {
+            color: #333; /* Dark grey text */
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+        }
+
+        video {
+            border-radius: 8px;
+            border: 2px solid #ccc; /* Light grey border */
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        canvas {
+            display: none;
+        }
+
+        #capture-btn {
+            margin-top: 20px;
+            padding: 10px 20px;
+            background-color: #007B7F; /* Teal background */
+            color: white;
+            font-size: 1rem;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        #capture-btn:hover {
+            background-color: #005f5b; /* Darker teal on hover */
+        }
+
+        #upload-form {
+            margin-top: 20px;
+            text-align: center;
+        }
+
+        button[type="submit"] {
+            padding: 10px 20px;
+            background-color: #007B7F; /* Teal background */
+            color: white;
+            font-size: 1rem;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        button[type="submit"]:hover {
+            background-color: #005f5b; /* Darker teal on hover */
+        }
+
+        #image-input {
+            display: none;
+        }
+
+        form {
+            margin-top: 20px;
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Mobile responsiveness */
+        @media (max-width: 600px) {
+            video {
+                width: 100%;
+                max-width: 300px;
+            }
+
+            canvas {
+                width: 100%;
+                max-width: 300px;
+            }
+
+            #capture-btn,
+            button[type="submit"] {
+                width: 100%;
+                max-width: 200px;
+                font-size: 1.1rem;
+                padding: 15px;
+            }
+
+            form {
+                width: 90%;
+                max-width: 400px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <h1>Fruit Scanner Cam</h1>
+
+    <!-- Video Stream -->
+    <video id="camera" autoplay playsinline width="300" height="300"></video>
+
+    <!-- Capture Button -->
+    <button id="capture-btn">Capture Image</button>
+
+    <!-- Canvas to Capture Image -->
+    <canvas id="canvas" width="300" height="300" style="display:none;"></canvas>
+
+    <!-- Form to Send Image to Backend -->
+    <form id="upload-form" method="POST" enctype="multipart/form-data">
+        {% csrf_token %}
+        <input type="hidden" name="image" id="image-input">
+        <button type="submit">Identify Fruit</button>
+    </form>
+
+    <script>
+        // Access Camera
+        const video = document.getElementById('camera');
+        const canvas = document.getElementById('canvas');
+        const captureBtn = document.getElementById('capture-btn');
+        const imageInput = document.getElementById('image-input');
+
+        // Start Camera Stream
+        navigator.mediaDevices.getUserMedia({ video: true })
+            .then(stream => video.srcObject = stream)
+            .catch(err => console.error('Camera access denied:', err));
+
+        // Capture Image
+        captureBtn.addEventListener('click', () => {
+            const context = canvas.getContext('2d');
+            context.drawImage(video, 0, 0, canvas.width, canvas.height);
+            const imageData = canvas.toDataURL('image/png');
+            imageInput.value = imageData;  // Send image as Base64 string
+        });
+    </script>
+</body>
+</html>
